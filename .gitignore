@@ -1,0 +1,25 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Runtime & Evidence Directory
+.data/
+*.log
+
+# Build & Dependency Artifacts
+target/
+dist/
+build/
+node_modules/
+
+# IDE & Editor Configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
