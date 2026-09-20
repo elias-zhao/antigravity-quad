@@ -15,6 +15,7 @@
 
 - [Why Quad?](#-why-quad)
 - [Key Advantages](#-key-advantages)
+- [Example Usage (`/quad`)](#-example-usage-quad)
 - [Three Core Design Philosophies](#-three-core-design-philosophies)
 - [Four Specialized Roles Matrix](#-four-specialized-roles-matrix)
 - [Six-Stage Orchestration Pipeline](#-six-stage-orchestration-pipeline)
@@ -59,6 +60,47 @@ Quad provides enterprise-grade reliability and massive throughput gains over tra
 | 🚀 **1:1 Paired Zero-Queue Flow** | Sequential reviews create long queues; one slow task halts the entire batch. | **Pipeline Zero-Queueing**: The instant any Worker finishes, its paired Reviewer is launched concurrently. Testing overlaps seamlessly with adjacent feature work. |
 | 🎯 **Visual & Arithmetic UAT** | Headless unit tests pass, but the UI is broken for real users (modals cannot close, balances fail to close). | **Zero-Code Acceptance**: A dynamic probe captures real browser evidence (screenshots, network logs). Acceptance agents inspect screens with **zero source code access**, auditing arithmetic reconciliation. |
 | 💰 **Extreme Cost Efficiency** | Relies on expensive flagship models (Pro/Opus) to avoid simple mistakes. | **100% Flash-Powered**: By converting fuzzy instructions into checklists and isolated commands, lightweight `flash` models achieve higher reliability at **80%+ lower token costs and latency**. |
+
+---
+
+## 💡 Example Usage (`/quad`)
+
+Trigger Quad in Antigravity by prepending `/quad` to your prompt, or let the assistant auto-activate it during large multi-module refactoring tasks:
+
+### 1. User Prompt
+```text
+/quad Refactor the order calculation and balance ledger modules: ensure 6-decimal fixed-point precision, and verify that the UI correctly updates balances upon checkout.
+```
+
+### 2. Orchestrator Triage (2D Batch Matrix)
+The master orchestrator analyzes file dependencies and outputs a non-overlapping execution plan:
+```markdown
+### Orchestration Plan (2D Batch Matrix)
+- [Batch 1 (Concurrent Feature Workers)]:
+  * Worker 1 (Order Calc) ➔ Exclusive File: [`crates/order/src/calc.rs`]
+  * Worker 2 (Balance Ledger) ➔ Exclusive File: [`crates/settle/src/ledger.rs`]
+  - Files are completely disjoint ($Files(W1) \cap Files(W2) = \emptyset$). Dispatched simultaneously in a single call.
+- [Batch 2 (Dependent Integration)]:
+  * Worker 3 (API Gateway) ➔ Exclusive File: [`crates/gateway/src/handler.rs`]
+    - Non-concurrency Evidence: Relies on newly exported traits from Batch 1.
+```
+
+### 3. Execution & Independent Review (1:1 Paired Flow)
+1. **Worker 1 & Worker 2** code concurrently in isolated build sandboxes (`CARGO_TARGET_DIR=target/subagents/worker-{ID}`).
+2. The instant **Worker 1** finishes, **Reviewer 1** is spawned with strict input isolation:
+   - Worker 1's self-evaluative conclusions are scrubbed.
+   - Reviewer 1 receives concrete acceptance numbers: `50 shares * 10.25¢ = $5.13 frozen`.
+   - Reviewer 1 creates exclusive test `tests/test_calc.rs` and checks the defect checklist (zero, overflow, precision).
+3. **Worker 2** and **Reviewer 2** advance simultaneously without queue blocking.
+
+### 4. User-Perspective UAT (Zero Code Access)
+Since the task touches UI and financial balances:
+- A dynamic probe script spins up a real browser, places an order, and saves screenshots and scraped values to `.data/investigation/uat-01/`.
+- The **Acceptance Subagent** (`research`, strictly zero source code access) verifies on-screen values:
+  $$\text{Available } \$94.87 + \text{Frozen } \$5.13 = \text{Total } \$100.00 \quad (\text{CLOSED } \checkmark)$$
+
+### 5. Atomic Convergence
+The master orchestrator runs `git status --short` to audit physical files, passes full test gates, and commits changes atomically per task!
 
 ---
 
