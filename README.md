@@ -1,7 +1,9 @@
 # ⚡ Antigravity Quad
 
-> **面向 Google Antigravity (AGY) 深度设计的高吞吐、防幻觉多智能体协同编排框架。**  
-> 统一采用轻量极速模型（`flash`），在单分支环境下实现「无交集并发攻坚 + 独立契约验证 + 零源码用户验收」。
+> **High-throughput, anti-hallucination multi-agent orchestration framework custom-engineered for Google Antigravity (AGY).**  
+> Powered universally by lightweight, lightning-fast `flash` models, Quad enforces **non-overlapping concurrent implementation**, **independent contract verification**, and **zero-source-code user acceptance** across a clean single Git branch.
+
+**English** | [中文说明 (Chinese)](README_zh.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/google)
@@ -9,121 +11,121 @@
 
 ---
 
-## 📖 目录
+## 📖 Table of Contents
 
-- [为什么需要 Quad？](#-为什么需要-quad)
-- [三大核心设计哲学](#-三大核心设计哲学)
-- [四大专职角色矩阵](#-四大专职角色矩阵)
-- [六阶段端到端协同流水线](#-六阶段端到端协同流水线)
-- [一行命令极速安装](#-一行命令极速安装)
-- [开源许可证](#-开源许可证)
+- [Why Quad?](#-why-quad)
+- [Three Core Design Philosophies](#-three-core-design-philosophies)
+- [Four Specialized Roles Matrix](#-four-specialized-roles-matrix)
+- [Six-Stage Orchestration Pipeline](#-six-stage-orchestration-pipeline)
+- [One-Liner Quick Installation](#-one-liner-quick-installation)
+- [License](#-license)
 
 ---
 
-## 💡 为什么需要 Quad？
+## 💡 Why Quad?
 
-在现代 AI 辅助编码中，直接使用单一 Agent 或无输入隔离的多 Agent 往往会在任务收敛时遭遇**严重的结构性失效**。无论模型态度多端正、Prompt 多严厉，以下问题在单点流程中必然发生：
+When modern AI agents write and refactor complex codebases, single-agent workflows and loosely coupled multi-agent systems suffer from **structural failure**. Regardless of prompt tone or model capability, unconstrained setups inevitably fail in four predictable ways:
 
 ```
-传统审查模式（容易沦为橡皮图章）：
-[攻坚员编写代码] ➔ "我已完成且自测通过" ➔ [审查员看到自评与 diff] ➔ "确认实现良好，准予签收" (漏过 15+ 真实缺陷)
+Typical rubber-stamp review failure:
+[Worker writes code] ➔ "I completed this and self-tests pass!" ➔ [Reviewer reads code diff & self-evaluation] ➔ "LGTM, looks clean!" (15+ critical bugs slip into production)
 ```
 
-究其根因，是由四个**底层结构性缺陷**导致的：
+The root causes are structural:
 
-1. **参照系颠倒（以 diff 为准 vs 以契约或任务书为准）**  
-   若审查员被指示「审计攻坚员改了什么」，其期望值只能从被审代码的现有行为倒推。**从现有代码倒推出来的测试断言，在逻辑上永远必然通过。**
-2. **上下文污染（自评破坏独立推演）**  
-   攻坚员自评中的「已完成、已自测通过、编译全绿」一旦流入审查员的上下文，就等于向模型预设了一个标准答案。模型会顺着现成结论续写肯定评价，彻底放弃对抗性推演。
-3. **职责交叉腐蚀（既写实现又写测试）**  
-   当一个 Agent 的考核目标是「让所有测试变绿」，修改实现代码来迎合自己写的测试就是阻力最小的最优解。这是目标函数的天然缺陷，而非态度问题。
-4. **前端与视觉盲区（SSR / 单测通过 ≠ 用户可用）**  
-   单元测试无法发现弹窗无法关闭、按键步进精度缺失、网络断线后重连失败以及界面金额在算术上未能闭合的缺陷。
+1. **Inverted Frame of Reference (Diff vs. Contract)**  
+   When a reviewer is asked to "review what the worker changed," its expectation is reverse-engineered from the code's existing behavior. **Assertions derived from implementation behavior are tautological—they always pass.**
+2. **Context Pollution (Self-Evaluation Kills Critical Thinking)**  
+   Phrases like *"completed," "all self-tests pass,"* or *"ready for review"* provide pre-baked answers in the LLM's context. `flash` models naturally rationalize and follow the existing narrative rather than re-deducing independently.
+3. **Cross-Role Corruption (Test Author = Code Author)**  
+   When an agent's objective function is "achieve 100% test pass rate," tweaking implementation code to accommodate a test is the path of least resistance. This is an objective flaw, not laziness.
+4. **Visual & Arithmetic Blind Spots (Green Unit Tests ≠ Usable Software)**  
+   Headless unit tests cannot catch modal dialogs that cannot be dismissed, broken keyboard input stepping, reconnection failures, or balance conservation violations where figures displayed on screen fail to reconcile.
 
-**Quad 彻底打破这一死结**，将软件工程顶级的「分权制衡」与「硬门禁隔离」注入多智能体执行链路。
-
----
-
-## 🎯 三大核心设计哲学
-
-- 🔹 **flash 不执行形容词，只执行动词**  
-  「对抗性推演」「穷尽排查」对轻量模型等于空话。所有质量要求必须落盘为**可逐条勾选的缺陷清单**和**可直接复制执行的隔离构建命令**。
-- 🔹 **独立性来自输入隔离，不来自身份设定**  
-  不要通过情绪施压（如「找不出 Bug 就是失职」）逼迫审查员，这只会诱发无意义的琐碎噪音。真正的独立性在于**从审查员与验收员的输入中物理剔除自评与实现源码**。
-- 🔹 **判断力留在主控与人类侧，执行力交给 flash**  
-  期望数值必须来源于产品任务书原文、数学恒等式或人类输入，**严禁任何智能体自己编造验收数值**。
+**Quad breaks this deadlock** by injecting separation of powers, physical input isolation, and strict state machine gates into the multi-agent loop.
 
 ---
 
-## 🎭 四大专职角色矩阵
+## 🎯 Three Core Design Philosophies
 
-所有子智能体统一采用 `Model: "flash"` 与 `Workspace: "inherit"`，在同一工作区单分支协同推进：
+- 🔹 **Flash executes verbs, not adjectives**  
+  Demands like "adversarial deduction," "exhaustive check," or "deep audit" are ignored by compact models. Quality guarantees must be formulated as **checkable defect matrices** and **pre-filled, copy-paste executable terminal commands**.
+- 🔹 **Independence comes from input isolation, not prompt sentiment**  
+  Never yell at an LLM (*"find bugs or you fail"*). Emotional prompting creates noisy trivial edge cases. True independence is achieved by **physically stripping self-evaluations and implementation code from the reviewer's and acceptance tester's context**.
+- 🔹 **Keep judgment with humans & orchestrators; delegate execution to flash**  
+  Expected acceptance numbers must originate from specifications, mathematical formulas, or human operators. **AI subagents are strictly forbidden from inventing acceptance numbers.**
 
-| 角色 | 原生 TypeName | 思维推理定位 | 核心职责 | 绝对禁区 |
+---
+
+## 🎭 Four Specialized Roles Matrix
+
+All subagents execute under `Model: "flash"` and `Workspace: "inherit"` within a single Git working branch:
+
+| Role | Native TypeName | Reasoning Effort | Core Responsibility | Forbidden Boundaries |
 | :--- | :--- | :--- | :--- | :--- |
-| 🔍 **侦察员 (Scout)** | `research`（纯只读） | 低推理（快速直出） | 只读检索符号定义、调用链、任务书与架构契约 | 严禁写任何文件，严禁执行破坏性命令，严禁再次派发子智能体 |
-| 🛠️ **攻坚员 (Worker)** | `self` | 高推理（深度推演） | 单分支文件独占攻坚，编写覆盖正常路径的基础单测 | 严禁修改未授权文件，严禁改全局文档，严禁执行 Git 写命令，严禁在回复中输出结论性自评 |
-| 🛡️ **审查员 (Reviewer)** | `code-reviewer` | 高推理（深度推演） | 依据任务书验收项独立推导期望值，编写异常与边界测试，**只报告不修复** | **禁止修改任何非测试文件**，严禁从被审代码倒推期望值，严禁输出「批准提交」 |
-| 🎯 **验收员 (Acceptance)**| `research`（纯只读） | 低到中推理 | 照场景卡核对运行证据（截图/日志/HAR），对屏幕上的数字进行算术复核 | **明令禁止读取任何源码**（读了本次验收即作废），只核验「用户看到的结果是否与数学算术闭合」 |
+| 🔍 **Scout** | `research` (read-only) | Low (Fast Direct Mode) | Read-only discovery of symbols, call graphs, PRDs, and contracts | Forbidden to create/modify files; forbidden to execute destructive commands |
+| 🛠️ **Worker** | `self` | High (Deep Deduction) | Exclusive file ownership for feature coding; writes happy-path unit tests | Forbidden to touch unauthorized files; forbidden to run Git write commands; forbidden from emitting self-evaluative conclusions |
+| 🛡️ **Reviewer** | `code-reviewer` | High (Deep Deduction) | Independent verification against task specifications; writes edge/negative tests; **reports only, never fixes** | **Forbidden to modify non-test files**; forbidden to deduce expectations from code diff; forbidden to issue sign-offs |
+| 🎯 **Acceptance** | `research` (read-only) | Low to Medium | Inspects runtime evidence (screenshots/HAR/logs) against scenario cards; reconciles arithmetic balance | **Strictly forbidden from reading any source code**; forbidden to write code; validates that on-screen numbers close arithmetically |
 
 ---
 
-## 🔄 六阶段端到端协同流水线
+## 🔄 Six-Stage Orchestration Pipeline
 
 ```mermaid
 flowchart TD
-    A["主控分诊: 任务拆解与二维批次矩阵"] --> B["阶段二: 侦查调研 (Scout 只读探路)"]
-    B --> C["阶段三: 单点攻坚 (Batch 1 Workers 并发独占写)"]
-    C --> D["阶段四: 独立质量验证 (1:1 结对拉起 Reviewers)"]
-    D -->|发现缺陷| C
-    D -->|测试全绿 + 物理核验| E{"改动涉及用户界面或金额?"}
-    E -- 是 --> F["阶段五: 动态探针产证 + 零源码验收 (Acceptance 复核算术)"]
-    E -- 否 --> G["阶段六: 物理事实核验与主控串行门禁"]
-    F -->|算术闭合| G
-    F -->|算术不闭合| C
-    G --> H["主控分步原子提交 (Git Commit)"]
+    A["Stage 1: Task Triage & 2D Batch Matrix"] --> B["Stage 2: Reconnaissance (Scout Read-Only)"]
+    B --> C["Stage 3: Single-Point Coding (Batch 1 Workers Concurrent Write)"]
+    C --> D["Stage 4: Independent Verification (1:1 Paired Reviewers)"]
+    D -->|Defect Discovered| C
+    D -->|Tests Pass + Physical Check| E{"Affects UI or Financial Balances?"}
+    E -- Yes --> F["Stage 5: Dynamic Probe + Zero-Code Acceptance (Reconcile Numbers)"]
+    E -- No --> G["Stage 6: Physical Fact Audit & Orchestrator Gate"]
+    F -->|Balances Reconciled| G
+    F -->|Discrepancy Found| C
+    G --> H["Atomic Git Commits per Task"]
 ```
 
-### 1. 任务分诊与批次编排（二维批次矩阵）
-基于核心源码单文件交集算法判定：
-$$Files(Worker_A) \cap Files(Worker_B) = \emptyset \implies 必须在单次 \ invoke\_subagent \ 中并发派发$$
-串行仅允许两种证据：核心业务文件冲突不可拆分，或存在物理编译符号强依赖。
+### 1. Task Triage & 2D Batch Matrix
+Worker concurrency is governed strictly by source file disjointness:
+$$Files(Worker_A) \cap Files(Worker_B) = \emptyset \implies \text{Must dispatch concurrently in a single } invoke\_subagent \text{ call}$$
+Serialization requires concrete evidence: unresolved physical compile symbol dependencies or unavoidable file collisions.
 
-### 2. 侦查与调研（两步熔断）
-跨模块或查找深层调用链时派发 Scout（耗时秒级返回）。主控严格遵循两步熔断，不在主会话超预算详读大段业务代码。
+### 2. Reconnaissance & Two-Step Circuit Breaker
+Scouts map symbols and contracts in seconds. The master orchestrator follows a two-step circuit breaker, never wasting context window reading extensive business logic in the main session.
 
-### 3. 单点攻坚（物理隔离与防踩踏）
-为 Worker 精确划定单文件所有权，注入独立的本地构建缓存（如 `CARGO_TARGET_DIR=target/subagents/worker-{ID}`），根绝锁竞争。
+### 3. Isolated Feature Coding (No Lock Contention)
+Each Worker is granted exclusive ownership of specific source files and injected with isolated build caches (e.g., `CARGO_TARGET_DIR=target/subagents/worker-{ID}`).
 
-### 4. 独立质量验证（输入隔离与只报告不修复）
-- Worker 交付瞬间立即 1:1 拉起结对 Reviewer，流水线零等待；
-- 主控组装 Prompt 时**过滤所有自评结论**，仅传递文件路径与改动清单，验收项附带具体数值；
-- 审查员必须落地独立测试用例，遇到 Bug 保留红灯，**严禁私改实现代码**。
+### 4. Independent Verification (Input Isolation & Report Only)
+- Paired 1:1 with workers the instant they deliver—zero queue latency;
+- Orchestrators scrub all self-evaluative praise before dispatching prompts to reviewers;
+- Reviewers author reproducing failing tests upon finding bugs, **keeping them red**. Fixing is returned to the Worker.
 
-### 5. 用户视角独立验收（零源码视觉与算术核查）
-涉及界面交互或金额流转的任务，由探针脚本录制真实浏览器运行证据（截图、observed.json、network.har），验收员在**源码完全隔离**的前提下核对屏幕三数是否守恒闭合。
+### 5. User-Perspective Acceptance (Zero-Code Visual & Math Check)
+For UI or financial changes, a probe worker captures real browser screenshots and scraped values. The Acceptance subagent verifies that what the user sees satisfies mathematical identities, completely isolated from source code.
 
-### 6. 收敛交付与物理事实核验
-主控作为唯一 Git 写者，执行 `git status --short` 核验真实文件一致性，串行执行全量门禁，并按 Task 完成粒度进行分步原子 Commit。
+### 6. Convergence & Atomic Commits
+The master orchestrator acts as the sole Git writer, runs `git status --short` to audit physical files, runs full test gates, and commits changes atomically per task.
 
 ---
 
-## 🚀 一行命令极速安装
+## 🚀 One-Liner Quick Installation
 
-在终端直接执行以下任一命令，即可秒级完成安装并直接在 Antigravity 中生效：
+Run either command in your terminal to install Quad and activate it instantly in Antigravity:
 
-### 选项 A：Git 原生一行命令（最推荐，纯净且支持后续更新）
+### Option A: Native Git One-Liner (Recommended)
 
 ```bash
 git clone https://github.com/elias-zhao/antigravity-quad.git ~/.gemini/config/skills/quad
 ```
 
-> 💡 **更新方式**：后续若有版本升级，只需在任意终端执行一行：  
+> 💡 **How to Update**: Whenever a new version is released, simply run:  
 > `cd ~/.gemini/config/skills/quad && git pull`
 
 ---
 
-### 选项 B：Curl 一键远程安装
+### Option B: Curl Automated Installation
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/elias-zhao/antigravity-quad/main/scripts/install.sh | bash
@@ -131,7 +133,6 @@ curl -fsSL https://raw.githubusercontent.com/elias-zhao/antigravity-quad/main/sc
 
 ---
 
+## 📄 License
 
-## 📄 开源许可证
-
-本项目基于 [MIT License](LICENSE) 许可协议开源，欢迎自由使用、分发与二次衍生。
+This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
